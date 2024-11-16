@@ -21,11 +21,20 @@ RUN ./mvnw dependency:go-offline -B
 # Copy the source code into the container
 COPY src ./src
 
+# Set environment variables (with default values)
+ENV SPRING_DATASOURCE_URL=jdbc:h2:mem:testdb
+ENV SPRING_DATASOURCE_DRIVER=org.h2.Driver
+ENV SPRING_DATASOURCE_USERNAME=sa
+ENV SPRING_DATASOURCE_PASSWORD=
+ENV SERVER_PORT=8080
+ENV LOGGING_LEVEL_ROOT=INFO
+ENV LOGGING_LEVEL_APP=DEBUG
+
 # Build the application using Maven
 RUN ./mvnw clean package -DskipTests
 
 # Expose the application port
-EXPOSE 8080
+EXPOSE ${SERVER_PORT}
 
-# Run the Spring Boot application
-ENTRYPOINT ["java", "-jar", "target/LibrarySystem-0.0.1-SNAPSHOT.jar"]
+# Run the Spring Boot application with environment variables
+ENTRYPOINT ["java", "-jar", "target/LibrarySystem-0.0.1-SNAPSHOT.jar"]v

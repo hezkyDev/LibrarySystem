@@ -1,13 +1,3 @@
-name: CI/CD Pipeline
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,7 +13,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Cache Maven dependencies
-        uses: actions/cache@v4 
+        uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
@@ -48,3 +38,14 @@ jobs:
 
       - name: Push Docker image to GitHub Container Registry
         run: docker push ghcr.io/hezkydev/librarysystem/library-system:latest
+
+      - name: Test Docker Container
+        run: |
+          docker run -e SPRING_DATASOURCE_URL=jdbc:h2:mem:testdb \
+                     -e SPRING_DATASOURCE_DRIVER=org.h2.Driver \
+                     -e SPRING_DATASOURCE_USERNAME=sa \
+                     -e SPRING_DATASOURCE_PASSWORD= \
+                     -e SERVER_PORT=8080 \
+                     -e LOGGING_LEVEL_ROOT=INFO \
+                     -e LOGGING_LEVEL_APP=DEBUG \
+                     -p 8080:8080 ghcr.io/hezkydev/librarysystem/library-system:latest
