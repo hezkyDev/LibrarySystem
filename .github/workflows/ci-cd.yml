@@ -52,9 +52,10 @@ jobs:
       - name: Push Docker image to GitHub Container Registry
         run: docker push ghcr.io/hezkydev/librarysystem/library-system:latest
 
-      - name: Test Docker Container
+        - name: Test Docker Container
         run: |
-          docker run -e SPRING_DATASOURCE_URL=jdbc:h2:mem:testdb \
+          docker run -d --name library-system-container \
+                     -e SPRING_DATASOURCE_URL=jdbc:h2:mem:testdb \
                      -e SPRING_DATASOURCE_DRIVER=org.h2.Driver \
                      -e SPRING_DATASOURCE_USERNAME=sa \
                      -e SPRING_DATASOURCE_PASSWORD= \
@@ -62,3 +63,13 @@ jobs:
                      -e LOGGING_LEVEL_ROOT=INFO \
                      -e LOGGING_LEVEL_APP=DEBUG \
                      -p 8080:8080 ghcr.io/hezkydev/librarysystem/library-system:latest
+      
+          # Wait for the application to start
+          sleep 10
+      
+          # Health check to verify the application is running
+          curl -f http://localhost:8080/api/books || exit 1
+      
+          # Stop the container after the test
+          docker stop library-system-container
+          docker rm library-system-container
