@@ -1,0 +1,32 @@
+# Maven target directory
+/target/
+
+# Eclipse and IDE specific files
+.classpath
+.project
+.settings/
+
+# MacOS specific files
+.DS_Store
+
+# Maven Wrapper files
+.mvn/wrapper/maven-wrapper.jar
+mvnw
+mvnw.cmd
+
+# Log files
+*.log
+
+# Docker related files
+.dockerignore
+
+# Temporary files and directories
+*.tmp
+*.bak
+*.swp
+
+# OS generated files
+Thumbs.db
+
+# Local folder
+/Documentation/
